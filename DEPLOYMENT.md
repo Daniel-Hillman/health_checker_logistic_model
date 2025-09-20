@@ -102,15 +102,58 @@
 
 ## 🔧 Troubleshooting:
 
-**If deployment fails:**
-- Check build logs
-- Ensure all files are committed
-- Verify requirements.txt is complete
-- Check Python version compatibility
+### **Common Issues & Solutions:**
 
-**Performance tips:**
+#### **1. Pandas/Python Version Conflicts (Your Current Issue)**
+**Problem:** `pandas 2.1.1` not compatible with Python 3.13
+**Solutions:**
+- ✅ Use `requirements-minimal.txt` instead
+- ✅ Specify Python 3.11 in `runtime.txt`
+- ✅ Updated requirements with version ranges
+
+#### **2. Alternative Deployment (If Render Fails)**
+Try **Railway** instead:
+```bash
+# 1. Push to GitHub
+git add .
+git commit -m "Fix deployment issues"
+git push
+
+# 2. Go to railway.app
+# 3. Connect GitHub repo
+# 4. Deploy automatically
+```
+
+#### **3. Minimal Requirements Approach**
+If still failing, use the minimal requirements:
+```bash
+# Rename files
+mv requirements.txt requirements-full.txt
+mv requirements-minimal.txt requirements.txt
+
+# Redeploy
+git add .
+git commit -m "Use minimal requirements"
+git push
+```
+
+#### **4. Local Testing Before Deploy**
+```bash
+# Test locally first
+pip install -r requirements-minimal.txt
+python app.py
+# Visit http://localhost:5000
+```
+
+### **Performance Tips:**
 - Models load on startup (may take 30-60 seconds)
 - First request might be slow (cold start)
 - Consider upgrading to paid tier for better performance
+
+### **Alternative Platforms if Render Fails:**
+1. **Railway.app** - Often handles ML models better
+2. **Heroku** - Classic choice, good documentation
+3. **PythonAnywhere** - Beginner-friendly
+4. **DigitalOcean** - More control, $5/month
 
 Your ML health prediction app will be live and accessible to anyone worldwide! 🌍

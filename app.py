@@ -1,6 +1,12 @@
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-import pandas as pd
+try:
+    import pandas as pd
+    HAS_PANDAS = True
+except ImportError:
+    HAS_PANDAS = False
+    print("⚠️ Pandas not available, using numpy arrays")
+
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.linear_model import LogisticRegression
@@ -59,6 +65,9 @@ def load_or_train_model():
         print("🤖 Training Daniel's model architecture...")
         
         # Load data exactly like Daniel's notebook
+        if not HAS_PANDAS:
+            print("❌ Pandas required for model training")
+            return False
         df = pd.read_csv('synthetic_coffee_health_10000.csv')
         
         # One-hot encoding exactly like Daniel
@@ -161,11 +170,15 @@ def preprocess_input(data):
         if stress_level_key in template_input:
             template_input[stress_level_key] = 1
         
-        # Convert to DataFrame and ensure correct column order
-        input_df = pd.DataFrame([template_input])
-        input_df = input_df[feature_columns]  # Ensure correct order
-        
-        return input_df
+        # Convert to numpy array in correct order
+        if HAS_PANDAS:
+            input_df = pd.DataFrame([template_input])
+            input_df = input_df[feature_columns]
+            return input_df
+        else:
+            # Use numpy array if pandas not available
+            input_array = np.array([[template_input[col] for col in feature_columns]])
+            return input_array
         
     except Exception as e:
         print(f"❌ Error preprocessing input: {e}")
