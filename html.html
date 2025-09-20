@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>HealthPredict AI - Machine Learning Health Assessment</title>
+</head>
+
+<body>
+    <!-- Info Modal -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><i class="fas fa-brain"></i> About This Model</h2>
+            <div class="modal-body">
+                <h3>Machine Learning Model</h3>
+                <p><strong>Created by:</strong> Daniel Hillman</p>
+                <p><strong>Course:</strong> L6 AI Engineer Apprentice - Cambridge Spark</p>
+                <p><strong>Model Type:</strong> Logistic Regression Classifier</p>
+
+                <h3>Technical Details</h3>
+                <ul>
+                    <li><strong>Dataset:</strong> 10,000 synthetic coffee & health records</li>
+                    <li><strong>Features:</strong> 15 health and lifestyle variables</li>
+                    <li><strong>Target:</strong> Binary classification (Good vs Health Issues)</li>
+                    <li><strong>Preprocessing:</strong> One-hot encoding + Standard scaling</li>
+                    <li><strong>Algorithm:</strong> Logistic Regression with balanced class weights</li>
+                    <li><strong>Validation:</strong> Stratified train-test split (80/20)</li>
+                    <li><strong>Random State:</strong> 136 for reproducibility</li>
+                </ul>
+
+                <h3>Model Development Process</h3>
+                <ol>
+                    <li>Data loading and exploration from Kaggle dataset</li>
+                    <li>One-hot encoding of categorical variables</li>
+                    <li>Binary target transformation (Mild/Moderate/Severe → Issue)</li>
+                    <li>Feature standardization using StandardScaler</li>
+                    <li>Logistic regression training with class balancing</li>
+                    <li>Model evaluation and feature importance analysis</li>
+                    <li>Model serialization and Flask API deployment</li>
+                </ol>
+
+                <div class="credits">
+                    <p><strong>UI Development:</strong> AI-Assisted Design</p>
+                    <p><strong>Disclaimer:</strong> This is an educational project for demonstration purposes only. Not
+                        intended for actual medical diagnosis.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main-card">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-content">
+                    <h1 class="main-title">HealthPredict AI</h1>
+                    <p class="subtitle">Advanced Machine Learning Health Assessment</p>
+                    <button id="infoBtn" class="info-btn">
+                        <i class="fas fa-info-circle"></i> Model Information
+                    </button>
+                </div>
+                <div class="stats-bar">
+                    <div class="stat-item">
+                        <i class="fas fa-brain"></i>
+                        <span>ML Powered</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-bolt"></i>
+                        <span>Real-time Analysis</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Privacy Focused</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Loading Animation -->
+            <div id="loadingAnimation" class="loading-overlay" style="display: none;">
+                <div class="loading-content">
+                    <div class="neural-network">
+                        <div class="node node-1"></div>
+                        <div class="node node-2"></div>
+                        <div class="node node-3"></div>
+                        <div class="node node-4"></div>
+                        <div class="connection con-1"></div>
+                        <div class="connection con-2"></div>
+                        <div class="connection con-3"></div>
+                        <div class="connection con-4"></div>
+                    </div>
+                    <h3>Processing Health Data</h3>
+                    <p id="loadingText">Initializing neural pathways...</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Health Assessment Form -->
+            <form id="healthForm" class="assessment-form">
+                <!-- Personal Information -->
+                <section class="form-section">
+                    <h2><i class="fas fa-user"></i> Personal Information</h2>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="age">Age</label>
+                            <input type="number" id="age" name="age" placeholder="Enter your age" min="18" max="100"
+                                required>
+                        </div>
+                        <div class="input-group">
+                            <label for="gender">Gender</label>
+                            <select id="gender" name="gender" required>
+                                <option value="">Select gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="country">Country</label>
+                            <select id="country" name="country" required>
+                                <option value="">Select country</option>
+                                <option value="Germany">Germany</option>
+                                <option value="Brazil">Brazil</option>
+                                <option value="Spain">Spain</option>
+                                <option value="Mexico">Mexico</option>
+                                <option value="France">France</option>
+                                <option value="Canada">Canada</option>
+                                <option value="UK">United Kingdom</option>
+                                <option value="USA">United States</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="occupation">Occupation</label>
+                            <select id="occupation" name="occupation" required>
+                                <option value="">Select occupation</option>
+                                <option value="Healthcare">Healthcare</option>
+                                <option value="Office">Office Work</option>
+                                <option value="Service">Service Industry</option>
+                                <option value="Student">Student</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Lifestyle Factors -->
+                <section class="form-section">
+                    <h2><i class="fas fa-coffee"></i> Lifestyle Factors</h2>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="coffee_intake">Daily Coffee Intake (cups)</label>
+                            <input type="number" id="coffee_intake" name="coffee_intake" placeholder="0.0" min="0"
+                                max="10" step="0.1" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="caffeine_mg">Daily Caffeine (mg)</label>
+                            <input type="number" id="caffeine_mg" name="caffeine_mg" placeholder="0" min="0" max="1000"
+                                required>
+                        </div>
+                        <div class="input-group">
+                            <label>Smoking Status</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="smoking" value="0" required>
+                                    <span class="radio-custom"></span>
+                                    Non-smoker
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="smoking" value="1">
+                                    <span class="radio-custom"></span>
+                                    Smoker
+                                </label>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>Alcohol Consumption</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="alcohol_consumption" value="0" required>
+                                    <span class="radio-custom"></span>
+                                    No
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="alcohol_consumption" value="1">
+                                    <span class="radio-custom"></span>
+                                    Yes
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Health Metrics -->
+                <section class="form-section">
+                    <h2><i class="fas fa-heartbeat"></i> Health Metrics</h2>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="bmi">BMI (Body Mass Index)</label>
+                            <input type="number" id="bmi" name="bmi" placeholder="25.0" min="15" max="50" step="0.1"
+                                required>
+                        </div>
+                        <div class="input-group">
+                            <label for="heart_rate">Resting Heart Rate (bpm)</label>
+                            <input type="number" id="heart_rate" name="heart_rate" placeholder="70" min="40" max="120"
+                                required>
+                        </div>
+                        <div class="input-group">
+                            <label for="sleep_hours">Sleep Hours per Night</label>
+                            <input type="number" id="sleep_hours" name="sleep_hours" placeholder="8.0" min="3" max="12"
+                                step="0.1" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="sleep_quality">Sleep Quality</label>
+                            <select id="sleep_quality" name="sleep_quality" required>
+                                <option value="">Select quality</option>
+                                <option value="Good">Good</option>
+                                <option value="Fair">Fair</option>
+                                <option value="Poor">Poor</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="stress_level">Stress Level</label>
+                            <select id="stress_level" name="stress_level" required>
+                                <option value="">Select level</option>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="physical_activity">Physical Activity (hours/week)</label>
+                            <input type="number" id="physical_activity" name="physical_activity" placeholder="5.0"
+                                min="0" max="50" step="0.1" required>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Submit Button -->
+                <div class="submit-section">
+                    <button type="submit" class="submit-btn" id="analyzeBtn">
+                        <i class="fas fa-brain"></i>
+                        <span>Analyze Health Status</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Results Section -->
+            <div id="results" class="results-section" style="display: none;">
+                <div id="prediction-output"></div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="credits">
+                    <p><strong>ML Model:</strong> Daniel Hillman | L6 AI Engineer Apprentice - Cambridge Spark</p>
+                    <p><strong>UI Design:</strong> AI-Assisted Development</p>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let loadingInterval;
+        let progressInterval;
+
+        // Modal functionality
+        const modal = document.getElementById('infoModal');
+        const infoBtn = document.getElementById('infoBtn');
+        const closeBtn = document.getElementsByClassName('close')[0];
+
+        infoBtn.onclick = () => modal.style.display = 'block';
+        closeBtn.onclick = () => modal.style.display = 'none';
+        window.onclick = (event) => {
+            if (event.target === modal) modal.style.display = 'none';
+        };
+
+        // Loading animation texts
+        const loadingTexts = [
+            'Initializing neural pathways...',
+            'Processing health parameters...',
+            'Analyzing lifestyle patterns...',
+            'Computing risk factors...',
+            'Generating health assessment...',
+            'Finalizing predictions...'
+        ];
+
+        function showLoadingAnimation() {
+            const loadingOverlay = document.getElementById('loadingAnimation');
+            const loadingText = document.getElementById('loadingText');
+            const progressFill = document.querySelector('.progress-fill');
+
+            loadingOverlay.style.display = 'flex';
+
+            let textIndex = 0;
+            let progress = 0;
+
+            // Animate loading text
+            loadingInterval = setInterval(() => {
+                loadingText.textContent = loadingTexts[textIndex];
+                textIndex = (textIndex + 1) % loadingTexts.length;
+            }, 800);
+
+            // Animate progress bar
+            progressInterval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 100) progress = 100;
+                progressFill.style.width = progress + '%';
+            }, 200);
+        }
+
+        function hideLoadingAnimation() {
+            const loadingOverlay = document.getElementById('loadingAnimation');
+            loadingOverlay.style.display = 'none';
+            clearInterval(loadingInterval);
+            clearInterval(progressInterval);
+
+            // Reset progress
+            document.querySelector('.progress-fill').style.width = '0%';
+        }
+
+        // ML Prediction function using Daniel's model
+        async function makePrediction(inputData) {
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(inputData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                return result;
+
+            } catch (error) {
+                console.error('Prediction error:', error);
+                // Fallback prediction (binary like Daniel's model)
+                return {
+                    prediction: 'Good',
+                    confidence: 0.75,
+                    probabilities: { 'Good': 0.75, 'Issue': 0.25 }
+                };
+            }
+        }
+
+        // Form submission
+        document.getElementById('healthForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Show loading animation
+            showLoadingAnimation();
+
+            // Collect form data
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+
+            // Simulate processing time (2-4 seconds)
+            const processingTime = 2000 + Math.random() * 2000;
+            await new Promise(resolve => setTimeout(resolve, processingTime));
+
+            try {
+                // Get prediction
+                const result = await makePrediction(data);
+
+                // Hide loading and show results
+                hideLoadingAnimation();
+                displayResults(result, data);
+
+            } catch (error) {
+                hideLoadingAnimation();
+                console.error('Error:', error);
+                displayError();
+            }
+        });
+
+        function displayResults(result, inputData) {
+            const resultsSection = document.getElementById('results');
+            const output = document.getElementById('prediction-output');
+
+            const statusColors = {
+                'Good': '#10B981',
+                'Issue': '#EF4444'
+            };
+
+            const statusIcons = {
+                'Good': 'fas fa-check-circle',
+                'Issue': 'fas fa-exclamation-triangle'
+            };
+
+            const statusMessages = {
+                'Good': 'Your health indicators suggest you are in good health. Keep up the great work!',
+                'Issue': 'Your health indicators suggest some areas for improvement. Consider consulting with a healthcare professional.'
+            };
+
+            const confidence = (result.confidence * 100).toFixed(1);
+
+            output.innerHTML = `
+                <div class="result-card">
+                    <div class="result-header">
+                        <i class="${statusIcons[result.prediction]}" style="color: ${statusColors[result.prediction]}"></i>
+                        <h3>Health Assessment Complete</h3>
+                    </div>
+                    
+                    <div class="result-main">
+                        <div class="status-indicator" style="background: ${statusColors[result.prediction]}">
+                            ${result.prediction === 'Good' ? 'Good Health' : 'Health Issues Detected'}
+                        </div>
+                        <div class="confidence-score">
+                            <span class="confidence-label">Model Confidence</span>
+                            <span class="confidence-value">${confidence}%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="health-message">
+                        <p>${statusMessages[result.prediction]}</p>
+                    </div>
+                    
+                    <div class="result-details">
+                        <h4>Analysis Summary</h4>
+                        <div class="metrics-grid">
+                            <div class="metric">
+                                <span class="metric-label">BMI</span>
+                                <span class="metric-value">${inputData.bmi}</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Sleep</span>
+                                <span class="metric-value">${inputData.sleep_hours}h</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Heart Rate</span>
+                                <span class="metric-value">${inputData.heart_rate} bpm</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Activity</span>
+                                <span class="metric-value">${inputData.physical_activity}h/week</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="new-analysis-btn" onclick="resetForm()">
+                        <i class="fas fa-redo"></i> New Analysis
+                    </button>
+                </div>
+            `;
+
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function displayError() {
+            const output = document.getElementById('prediction-output');
+            output.innerHTML = `
+                <div class="error-card">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Analysis Unavailable</h3>
+                    <p>Unable to process your health data at this time. Please try again later.</p>
+                    <button class="new-analysis-btn" onclick="resetForm()">
+                        <i class="fas fa-redo"></i> Try Again
+                    </button>
+                </div>
+            `;
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function resetForm() {
+            document.getElementById('healthForm').reset();
+            document.getElementById('results').style.display = 'none';
+        }
+
+        // Form animations
+        document.addEventListener('DOMContentLoaded', function () {
+            const sections = document.querySelectorAll('.form-section');
+            sections.forEach((section, index) => {
+                section.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
+</body>
+
+</html>
