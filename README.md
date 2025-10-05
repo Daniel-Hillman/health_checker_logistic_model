@@ -1,8 +1,8 @@
-# 🏥 R U Healthy & Co. - AI Health Prediction App
+# R U Healthy & Co. - AI Health Prediction App
 
 A super modern, fun, and stylish health prediction web app powered by machine learning! ✨
 
-## 🚀 Features
+## Features
 
 - **Modern UI**: Glassmorphism design with smooth animations
 - **AI Powered**: Real logistic regression model trained on health data
@@ -10,7 +10,7 @@ A super modern, fun, and stylish health prediction web app powered by machine le
 - **Responsive**: Works on desktop and mobile
 - **Real-time Predictions**: Instant health status predictions
 
-## 🎯 What It Predicts
+## What It Predicts
 
 The AI analyzes your:
 - ☕ Coffee consumption habits
@@ -22,7 +22,7 @@ The AI analyzes your:
 
 And predicts your health status: **Good**, **Mild Issues**, or **Severe Issues**
 
-## 🛠️ Quick Start
+## Quick Start
 
 ### Option 1: Easy Start (Recommended)
 ```bash
@@ -53,14 +53,14 @@ Then open your browser to: `http://localhost:5000`
 └── LogisticRegression_Health_classifier.ipynb  # Original model made by D Hillman
 ```
 
-## 🤖 How It Works
+## How It Works
 
 1. **Data Processing**: The app uses the original CSV data to train a logistic regression model, the target is Health status
 2. **Feature Engineering**: Categorical variables are one-hot encoded
 3. **Real-time Prediction**: User input is processed and fed to the trained model
 4. **Fun Results**: Predictions are displayed with emojis, confidence scores, and health tips
 
-## 🎨 UI Features
+## UI Features
 
 - **Glassmorphism Design**: Modern frosted glass effects
 - **Smooth Animations**: Hover effects and transitions
@@ -85,13 +85,12 @@ The model is trained on 10,000 synthetic health records and achieves good accura
 The app calculates statistics like:
 - How many times your heart beats per day
 - Your annual caffeine consumption
-- Days spent sleeping per year
 
-## 🚨 Disclaimer
+## Disclaimer
 
 This is for educational and entertainment purposes only. Always consult real healthcare professionals for actual medical advice! 👩‍⚕️
 
-## 🤝 Contributing
+## Contributing
 
 Feel free to fork, modify, and improve this project! Some ideas:
 - Add more health metrics
